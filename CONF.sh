@@ -119,23 +119,23 @@ fi
 #	      images, however. Also, if you are using an NFS partition for
 #	      some part of this, you must use this option.
 # Paths to the mirrors
-export MIRROR=/srv/mirror/debian
+export MIRROR=/srv/mirrors/debian
 
 # Path of the temporary directory
-export TDIR=/srv/mirror/tmp
+export TDIR=/srv/mirrors/debian-cd-work/tmp
 
 # Path where the images will be written
-export OUT=/srv/mirror/debian-cd-test
+export OUT=/srv/mirrors/debian-cd-work/debian-cd-test
 
 # Where we keep the temporary apt stuff.
 # This cannot reside on an NFS mount.
-export APTTMP=/srv/mirror/tmp/apt
+export APTTMP=/srv/mirrors/debian-cd-work/tmp/apt
 
 # Do I want to have NONFREE merged in the CD set
 # export NONFREE=1
 
 # Do I want to have CONTRIB merged in the CD set
-export CONTRIB=1
+# export CONTRIB=1
 
 # Do I want to have NONFREE on a separate CD (the last CD of the CD set)
 # WARNING: Don't use NONFREE and EXTRANONFREE at the same time !
@@ -154,7 +154,7 @@ export CONTRIB=1
 # If your local packages are not under $MIRROR, but somewhere else, 
 # you can uncomment this line and edit to to point to a directory
 # containing dists/$CODENAME/local/binary-$ARCH
-# export LOCALDEBS=/home/joey/debian/va/debian
+export LOCALDEBS=/srv/mirrors/debian-cd-work/extra-debian
 
 # Where to find the security patches.  This directory should be the
 # top directory of a security.debian.org mirror.
@@ -175,7 +175,7 @@ export CONTRIB=1
 # Use this to force copying the files instead of symlinking or hardlinking
 # them. This is useful if your destination directories are on a different
 # partition than your source files.
-# export COPYLINK=1
+export COPYLINK=1
 
 # Options
 # export MKISOFS=mkisofs
@@ -387,7 +387,7 @@ export SNAPURL=Debian=http://snapshot.debian.org/archive/debian/SNAPDATETIME/
 
 # If set, limits the number of images to produce. The maximum
 # value of MAXISOS and MAXJIGDOS are limited to this setting.
-#export MAXCDS=1
+export MAXCDS=1
 
 # If set, overrides the boot picture used.
 #export SPLASHPNG="$BASEDIR/data/$CODENAME/splash-img.png"
@@ -406,7 +406,7 @@ export OMIT_RELEASE_NOTES=1
 # Set to 1 to not include the doc/tools directories on CD1
 # Useful to save space and avoids failures if you have a mirror
 # without those directories.
-#export OMIT_DOC_TOOLS=1
+export OMIT_DOC_TOOLS=1
 
 case "$OFFICIAL" in
     "Official")

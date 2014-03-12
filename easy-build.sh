@@ -92,15 +92,15 @@ export DI_DIST=$DI_CODENAME
 # or, use daily built d-i images (most from http://people.debian.org)
 #export DI_WWW_HOME=default
 # or, use custom / locally built images
-#export DI_DIR="$HOME/d-i_images/%ARCH%"
+#export DI_DIR="/srv/mirrors/debian-cd-work/custom/images/%ARCH%"
 
 
 ## Other options
 
 # Include local packages in the build
-#export LOCAL=1
+export LOCAL=1
 # Automatically update the Packages file(s) for the "local" repository?
-#UPDATE_LOCAL=1
+UPDATE_LOCAL=1
 
 # Number of CD/DVDs to build; comment out to build full set
 MAX_CDS=1
