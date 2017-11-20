@@ -27,6 +27,7 @@ debian-cd (3.1.17-jessie) UNRELEASED; urgency=medium
       to ensure this works.
     + Fix size calculation for EFI image
     + Make tools/update_popcon exit with errors when it fails
+    + Make tools/update_popcon deal with https on popcon.d.o
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 20 Apr 2015 12:36:57 +0100
 
