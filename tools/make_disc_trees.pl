@@ -601,7 +601,6 @@ sub recompress {
 	if ($filename =~ m/\/.*\/i18n\/(Translation.*)$/o &&
 		! ($filename =~ m/\/.*\/i18n\/(Translation.*gz)$/o)) {
 		system("gzip -9c < $_ >$_.gz");
-		unlink ($_);
 	}
 }	
 
