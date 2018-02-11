@@ -30,6 +30,7 @@ debian-cd (3.1.17-jessie) UNRELEASED; urgency=medium
     + Make tools/update_popcon deal with https on popcon.d.o
     + Declare 'my' instances of '$_' as 'local' in tools/make_disc_trees.pl
     + Ensure that in all places where we use -J we also use -joliet-long
+    + List jigdo and template files in SUMS files too
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 20 Apr 2015 12:36:57 +0100
 
