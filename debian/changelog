@@ -31,6 +31,8 @@ debian-cd (3.1.17-jessie) UNRELEASED; urgency=medium
     + Declare 'my' instances of '$_' as 'local' in tools/make_disc_trees.pl
     + Ensure that in all places where we use -J we also use -joliet-long
     + List jigdo, template and torrent files in SUMS files too
+    + Tweak the date used for snapshot.d.o references - use *tomorrow*
+      rather than today, to allow time for the snapshot to be updated.
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 20 Apr 2015 12:36:57 +0100
 
