@@ -33,6 +33,7 @@ debian-cd (3.1.17-jessie) UNRELEASED; urgency=medium
     + List jigdo, template and torrent files in SUMS files too
     + Tweak the date used for snapshot.d.o references - use *tomorrow*
       rather than today, to allow time for the snapshot to be updated.
+    + Provide hashes for uncompressed Translation-* again. Closes: #767253
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 20 Apr 2015 12:36:57 +0100
 
