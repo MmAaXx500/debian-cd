@@ -14,21 +14,21 @@ set -e
 # Configuration goes here.
 
 # Where is your mirror?
-MIRROR_NORM=/org/cdbuilder.debian.org/src/ftp/debian
-MIRROR_AMD64=/org/cdbuilder.debian.org/src/ftp/debian-amd64/debian
+MIRROR_NORM=/srv/cdbuilder.debian.org/src/ftp/debian
+MIRROR_AMD64=/srv/cdbuilder.debian.org/src/ftp/debian-amd64/debian
 
 # Do you want non-free? 1 for yes, 0 for no
 NONFREE=0
 
 # What release version is this?
-VER=8.6.0
+VER=8.10.0
 
 # Is this an official CD?
 OFFICIAL=Official
 # OFFICIAL="Unofficial snapshot"
 
 # Path to use with mkisofs/mkhybrid
-MKISOFS="$PWD/../genisoimage -jigdo-template-compress bzip2 -r -checksum_algorithm_iso md5,sha1,sha256,sha512"
+MKISOFS="genisoimage -jigdo-template-compress bzip2 -r -checksum_algorithm_iso md5,sha1,sha256,sha512"
 
 # Use JTE extensions to mkisofs to make jigdo files?
 JTE=1
@@ -37,13 +37,13 @@ JTE=1
 BT=1
 
 # The working directory to use. MUST be on the same partition as the mirror.
-TDIR=/org/cdbuilder.debian.org/src/deb-cd/tmp/jessie-update/cd-work
+TDIR=/srv/cdbuilder.debian.org/src/deb-cd/tmp/jessie-update/cd-work
 
 # Building jessie cd set ...
 CODENAME=jessie
 
 # Path where the images will be written
-OUT=/org/cdbuilder.debian.org/src/deb-cd/tmp/jessie-update/cd-out
+OUT=/srv/cdbuilder.debian.org/src/deb-cd/tmp/jessie-update/cd-out
 
 # Location(s) for the snapshot(s)
 SNAPSHOT='Debian=http://us.cdimage.debian.org/cdimage/snapshot/Debian/ --try-last'
@@ -69,7 +69,7 @@ esac
 # Location of the diff file to use to determine the changes. If you leave
 # this blank, we'll try to determine the changes from the ChangeLog files,
 # which is probably less accurate. 
-DIFF=/home/debian-cd/lists/jessie/r0-r6.diff
+DIFF=/home/debian-cd/lists/jessie/r0-r10.diff
 
 if [ "$TYPE" = "cd" ] ; then
     CDSIZE=644 # megabytes, leaving space for metadata
