@@ -92,7 +92,7 @@ export DI_DIST=$DI_CODENAME
 # or, use daily built d-i images (most from http://people.debian.org)
 #export DI_WWW_HOME=default
 # or, use custom / locally built images
-#export DI_DIR="/srv/mirrors/debian-cd-work/custom/images/%ARCH%"
+export DI_DIR="/srv/mirrors/debian-cd-work/custom/images/%ARCH%"
 
 
 ## Other options
