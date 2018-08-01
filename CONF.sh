@@ -77,7 +77,7 @@ fi
 # contained in that list will be chosen by preference from
 # ${CODENAME}-backports rather than just ${CODENAME}, along with
 # dependencies if they're needed as well
-#export BACKPORTS=backports-list
+export BACKPORTS=backports-list
 
 # If set, controls where the d-i components are downloaded from.
 # This may be an url, or "default", which will make it use the default url
