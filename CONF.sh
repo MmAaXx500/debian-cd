@@ -132,10 +132,10 @@ export OUT=/srv/mirrors/debian-cd-work/debian-cd-test
 export APTTMP=/srv/mirrors/debian-cd-work/tmp/apt
 
 # Do I want to have NONFREE merged in the CD set
-# export NONFREE=1
+export NONFREE=1
 
 # Do I want to have CONTRIB merged in the CD set
-# export CONTRIB=1
+export CONTRIB=1
 
 # Do I want to have NONFREE on a separate CD (the last CD of the CD set)
 # WARNING: Don't use NONFREE and EXTRANONFREE at the same time !
@@ -144,7 +144,7 @@ export APTTMP=/srv/mirrors/debian-cd-work/tmp/apt
 # Do I want to force (potentially non-free) firmware packages to be
 # placed on disc 1? Will make installation much easier if systems
 # contain hardware that depends on this firmware
-# export FORCE_FIRMWARE=1
+export FORCE_FIRMWARE=1
 
 # If you have a $MIRROR/dists/$CODENAME/local/binary-$ARCH dir with 
 # local packages that you want to put on the CD set then
