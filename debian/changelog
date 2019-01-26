@@ -37,6 +37,8 @@ debian-cd (3.1.17-jessie) UNRELEASED; urgency=medium
     + Updates for update-cd:
       - Grab checksums from the binary-all Packages.gz too when building
       - Generate checksums for torrents and jigdo files too if desired
+      - Tweak the code ordering in update-cd so the jigdo file checksums
+        are generated after they're compressed.
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 20 Apr 2015 12:36:57 +0100
 
