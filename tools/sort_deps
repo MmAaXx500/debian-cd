@@ -985,6 +985,10 @@ sub get_missing {
 		return ();
 	}
 
+	if (not add_missing (\@deps_list, $packages{$p}{"Recommends"}, \%t, 0, \@parents, $add_rec, $check_backports)) {
+		return ();
+	}
+
 	# Explicitly move the package itself to the end of the list,
 	# i.e. *after* all its dependencies
 	remove_entry(\%t, \@deps_list);
