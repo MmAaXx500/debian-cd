@@ -31,6 +31,8 @@ debian-cd (3.1.36) UNRELEASED; urgency=medium
   [ Jonathan Hettwer ]
   * Avoid embedding timestamps into gzipped Packages and Translations files.
   * Pass --invariant and -i deb00001 to mkfs.msdos
+  * Remove complaint about unset variable default_desktop when using a mirror
+    without task packages.
 
   [ Samuel Thibault ]
   * On firmware images, include the sound firmwares in the espeakup-enabled

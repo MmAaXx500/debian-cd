@@ -52,7 +52,7 @@ if ($coreutils_deb =~ m/_([[:alnum:]-]+)\.deb/) {
 
 # used in a few places to decide what happens when doing "generic"
 # discs.
-my $default_desktop; 
+my $default_desktop = "";
 
 # Find the dependency information of the task-desktop deb to see what
 # the default desktop should be
