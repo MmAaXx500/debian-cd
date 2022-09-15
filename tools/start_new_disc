@@ -353,156 +353,96 @@ if [ -n "$LOCAL" ] ; then
     SECTIONS="$SECTIONS local"
 fi
 
-# these two lines can be inserted below the "Architectures" line below,
-# to sort out broken Release files just after the testing --> stable
-# transition
-#     sed -e "s/^Suite: .*$/Suite: stable/" | \
-#     sed -e "s/^Description: .*$/Description: Debian $DEBVERSION/" | \
+start_new_release() {
+    local DIST DI_DIST SUITE
+    DIST=$1
+    DI_DIST=$2
 
-if [ -e "$MIRROR/dists/$CODENAME/Release" ] ; then
-    # Strip the MD5Sum and SHA1 fields
-    # Update some other information as well
-    sed -e "s/^Architectures: .*$/Architectures: $ARCHES/" \
-        $MIRROR/dists/$CODENAME/Release | \
-        sed -e "s|^Components: .*$|Components: $SECTIONS|" | \
-        perl -ne 'if (/^(MD5Sum|SHA1|SHA256|SHA512):/i) { $f=1; next }
-    if ($f) { 
-        unless (/^ /) { print; $f=0 }
-    } else { print }' > dists/$CODENAME/Release
-    if [ "$EARLY_BUILD_HACK"x = "1"x ] ; then
-        RDATE=`awk '/^Date:/ { print $2,$3,$4,$5}' dists/$CODENAME/Release`
-        sed -i -e "s/^Suite: .*$/Suite: stable/" dists/$CODENAME/Release
-        sed -i -e "s/^Description: .*$/Description: Debian $DEBVERSION Released $RDATE/" dists/$CODENAME/Release
-    fi
+    # these two lines can be inserted below the "Architectures" line below,
+    # to sort out broken Release files just after the testing --> stable
+    # transition
+    #     sed -e "s/^Suite: .*$/Suite: stable/" | \
+    #     sed -e "s/^Description: .*$/Description: Debian $DEBVERSION/" | \
 
-    # Create the suite symlink
-    SUITE=$(sed -n "/^Suite:/ s/.*: //p" dists/$CODENAME/Release)
-    if [ -n "$SUITE" ] && [ x"$SUITE" != x"$CODENAME" ]; then
-        ln -sf $CODENAME dists/$SUITE
-    fi
-else
-    echo "ERROR: Release file ($MIRROR/dists/$CODENAME/Release) is missing !"
-    exit 1
-fi
-
-if [ "$BACKPORTS"x != ""x ]; then
-    if [ -e "$MIRROR/dists/$CODENAME-backports/Release" ] ; then
-	# Strip the MD5Sum and SHA1 fields
-	# Update some other information as well
-	sed -e "s/^Architectures: .*$/Architectures: $ARCHES/" \
-            $MIRROR/dists/$CODENAME-backports/Release | \
+    if [ -e "$MIRROR/dists/$DIST/Release" ] ; then
+        # Strip the MD5Sum and SHA1 fields
+        # Update some other information as well
+        sed -e "s/^Architectures: .*$/Architectures: $ARCHES/" \
+            $MIRROR/dists/$DIST/Release | \
             sed -e "s|^Components: .*$|Components: $SECTIONS|" | \
             perl -ne 'if (/^(MD5Sum|SHA1|SHA256|SHA512):/i) { $f=1; next }
-    if ($f) { 
-        unless (/^ /) { print; $f=0 }
-    } else { print }' > dists/$CODENAME-backports/Release
-	if [ "$EARLY_BUILD_HACK"x = "1"x ] ; then
-            RDATE=`awk '/^Date:/ { print $2,$3,$4,$5}' dists/$CODENAME-backports/Release`
-            sed -i -e "s/^Suite: .*$/Suite: stable/" dists/$CODENAME-backports/Release
-            sed -i -e "s/^Description: .*$/Description: Debian $DEBVERSION Released $RDATE/" dists/$CODENAME-backports/Release
-	fi
+        if ($f) { 
+            unless (/^ /) { print; $f=0 }
+        } else { print }' > dists/$DIST/Release
+        if [ "$EARLY_BUILD_HACK"x = "1"x ] ; then
+            RDATE=`awk '/^Date:/ { print $2,$3,$4,$5}' dists/$DIST/Release`
+            sed -i -e "s/^Suite: .*$/Suite: stable/" dists/$DIST/Release
+            sed -i -e "s/^Description: .*$/Description: Debian $DEBVERSION Released $RDATE/" dists/$DIST/Release
+        fi
 
-	# Create the suite symlink
-	SUITE=$(sed -n "/^Suite:/ s/.*: //p" dists/$CODENAME-backports/Release)
-	if [ -n "$SUITE" ] && [ x"$SUITE" != x"$CODENAME-backports" ]; then
-            ln -sf $CODENAME-backports dists/$SUITE
-	fi
+        # Create the suite symlink
+        SUITE=$(sed -n "/^Suite:/ s/.*: //p" dists/$DIST/Release)
+        if [ -n "$SUITE" ] && [ x"$SUITE" != x"$DIST" ]; then
+            ln -sf $DIST dists/$SUITE
+        fi
     else
-	echo "ERROR: Release file ($MIRROR/dists/$CODENAME-backports/Release) is missing !"
-	exit 1
-    fi
-fi
-
-# Copying individual release files
-for ARCH in $ARCHES
-do
-    for SECT in $SECTIONS
-    do
-        # Install the release files
-        if [ -e "$MIRROR/dists/$CODENAME/$SECT/binary-$ARCH/Release" ] ; then
-            mkdir -p dists/$CODENAME/$SECT/binary-$ARCH
-            cp $MIRROR/dists/$CODENAME/$SECT/binary-$ARCH/Release \
-                dists/$CODENAME/$SECT/binary-$ARCH/
-            if [ "$DEBVERSION" != "testing" ] ; then
-                sed -i "s/^Archive:.*$/Archive: stable/" dists/$CODENAME/$SECT/binary-$ARCH/Release
-            fi
-        fi
-        if [ -n "$NONUS" -a -e "$NONUS/dists/$CODENAME/non-US/$SECT/binary-$ARCH/Release" ] ; then
-            mkdir -p dists/$CODENAME/non-US/$SECT/binary-$ARCH
-            cp $NONUS/dists/$CODENAME/non-US/$SECT/binary-$ARCH/Release \
-                dists/$CODENAME/non-US/$SECT/binary-$ARCH/
-            if [ "$DEBVERSION" != "testing" ] ; then
-                sed -i "s/^Archive:.*$/Archive: stable/" dists/$CODENAME/non-US/$SECT/binary-$ARCH/Release
-            fi
-        fi
-    done
-
-    if [ -n "$LOCALDEBS" -a -n "$LOCAL" ] ; then
-        if [ -e $LOCALDEBS/dists/$CODENAME/local/binary-$ARCH/Release ] ; then
-            mkdir -p dists/$CODENAME/local/binary-$ARCH
-            cp $LOCALDEBS/dists/$CODENAME/local/binary-$ARCH/Release \
-                dists/$CODENAME/local/binary-$ARCH/
-        fi
+        echo "ERROR: Release file ($MIRROR/dists/$DIST/Release) is missing !"
+        exit 1
     fi
 
-    if [ -e "$MIRROR/dists/$DI_CODENAME/main/debian-installer/binary-$ARCH/Release" ] ; then
-        mkdir -p dists/$CODENAME/main/debian-installer/binary-$ARCH
-        cp $MIRROR/dists/$DI_CODENAME/main/debian-installer/binary-$ARCH/Release \
-            dists/$CODENAME/main/debian-installer/binary-$ARCH/
-        if [ "$DEBVERSION" != "testing" ] ; then
-            sed -i "s/^Archive:.*$/Archive: stable/" dists/$CODENAME/main/debian-installer/binary-$ARCH/Release
-        fi
-    fi
-
-    if [ -n "$LOCAL"  -a -e "${LOCALDEBS:-$MIRROR}/dists/$DI_CODENAME/local/debian-installer/binary-$ARCH/Release" ] ; then
-        mkdir -p dists/$CODENAME/local/debian-installer/binary-$ARCH
-        cp "${LOCALDEBS:-$MIRROR}/dists/$DI_CODENAME/local/debian-installer/binary-$ARCH/Release" \
-            dists/$CODENAME/local/debian-installer/binary-$ARCH/
-    fi
-done
-
-# Copying individual release files for backports
-if [ "$BACKPORTS"x != ""x ]; then
+    # Copying individual release files
     for ARCH in $ARCHES
     do
-	for SECT in $SECTIONS
-	do
+        for SECT in $SECTIONS
+        do
             # Install the release files
-            if [ -e "$MIRROR/dists/$CODENAME-backports/$SECT/binary-$ARCH/Release" ] ; then
-		mkdir -p dists/$CODENAME-backports/$SECT/binary-$ARCH
-		cp $MIRROR/dists/$CODENAME-backports/$SECT/binary-$ARCH/Release \
-                   dists/$CODENAME-backports/$SECT/binary-$ARCH/
-		if [ "$DEBVERSION" != "testing" ] ; then
-                    sed -i "s/^Archive:.*$/Archive: stable/" dists/$CODENAME-backports/$SECT/binary-$ARCH/Release
-		fi
+            if [ -e "$MIRROR/dists/$DIST/$SECT/binary-$ARCH/Release" ] ; then
+                mkdir -p dists/$DIST/$SECT/binary-$ARCH
+                cp $MIRROR/dists/$DIST/$SECT/binary-$ARCH/Release \
+                    dists/$DIST/$SECT/binary-$ARCH/
+                if [ "$DEBVERSION" != "testing" ] ; then
+                    sed -i "s/^Archive:.*$/Archive: stable/" dists/$DIST/$SECT/binary-$ARCH/Release
+                fi
             fi
-            if [ -n "$NONUS" -a -e "$NONUS/dists/$CODENAME-backports/non-US/$SECT/binary-$ARCH/Release" ] ; then
-		mkdir -p dists/$CODENAME-backports/non-US/$SECT/binary-$ARCH
-		cp $NONUS/dists/$CODENAME-backports/non-US/$SECT/binary-$ARCH/Release \
-                   dists/$CODENAME-backports/non-US/$SECT/binary-$ARCH/
-		if [ "$DEBVERSION" != "testing" ] ; then
-                    sed -i "s/^Archive:.*$/Archive: stable/" dists/$CODENAME-backports/non-US/$SECT/binary-$ARCH/Release
-		fi
+            if [ -n "$NONUS" -a -e "$NONUS/dists/$DIST/non-US/$SECT/binary-$ARCH/Release" ] ; then
+                mkdir -p dists/$DIST/non-US/$SECT/binary-$ARCH
+                cp $NONUS/dists/$DIST/non-US/$SECT/binary-$ARCH/Release \
+                    dists/$DIST/non-US/$SECT/binary-$ARCH/
+                if [ "$DEBVERSION" != "testing" ] ; then
+                    sed -i "s/^Archive:.*$/Archive: stable/" dists/$DIST/non-US/$SECT/binary-$ARCH/Release
+                fi
             fi
-	done
+        done
 
-	if [ -n "$LOCALDEBS" -a -n "$LOCAL" ] ; then
-            if [ -e $LOCALDEBS/dists/$CODENAME-backports/local/binary-$ARCH/Release ] ; then
-		mkdir -p dists/$CODENAME-backports/local/binary-$ARCH
-		cp $LOCALDEBS/dists/$CODENAME-backports/local/binary-$ARCH/Release \
-                   dists/$CODENAME-backports/local/binary-$ARCH/
+        if [ -n "$LOCALDEBS" -a -n "$LOCAL" ] ; then
+            if [ -e $LOCALDEBS/dists/$DIST/local/binary-$ARCH/Release ] ; then
+                mkdir -p dists/$DIST/local/binary-$ARCH
+                cp $LOCALDEBS/dists/$DIST/local/binary-$ARCH/Release \
+                    dists/$DIST/local/binary-$ARCH/
             fi
-	fi
+        fi
 
-	if [ -e "$MIRROR/dists/$DI_CODENAME/main/debian-installer/binary-$ARCH/Release" ] ; then
-            mkdir -p dists/$CODENAME-backports/main/debian-installer/binary-$ARCH
-            cp $MIRROR/dists/$DI_CODENAME/main/debian-installer/binary-$ARCH/Release \
-               dists/$CODENAME-backports/main/debian-installer/binary-$ARCH/
+        if [ -e "$MIRROR/dists/$DI_DIST/main/debian-installer/binary-$ARCH/Release" ] ; then
+            mkdir -p dists/$DIST/main/debian-installer/binary-$ARCH
+            cp $MIRROR/dists/$DI_DIST/main/debian-installer/binary-$ARCH/Release \
+                dists/$DIST/main/debian-installer/binary-$ARCH/
             if [ "$DEBVERSION" != "testing" ] ; then
-		sed -i "s/^Archive:.*$/Archive: stable/" dists/$CODENAME-backports/main/debian-installer/binary-$ARCH/Release
+                sed -i "s/^Archive:.*$/Archive: stable/" dists/$DIST/main/debian-installer/binary-$ARCH/Release
             fi
-	fi
+        fi
+
+        if [ -n "$LOCAL"  -a -e "${LOCALDEBS:-$MIRROR}/dists/$DI_DIST/local/debian-installer/binary-$ARCH/Release" ] ; then
+            mkdir -p dists/$CODENAME/local/debian-installer/binary-$ARCH
+            cp "${LOCALDEBS:-$MIRROR}/dists/$DI_DIST/local/debian-installer/binary-$ARCH/Release" \
+                dists/$CODENAME/local/debian-installer/binary-$ARCH/
+        fi
     done
+}
+
+start_new_release $CODENAME $DI_CODENAME
+
+if [ "$BACKPORTS"x != ""x ]; then
+    start_new_release $CODENAME-backports $CODENAME-backports
 fi
 
 # Upgrade packages / kernels
